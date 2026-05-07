@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { signSession, sessionCookieOptions } from '@/lib/auth';
 
-const BASE_URL = process.env.APP_BASE_URL ?? 'https://odkrywca.karwia.pl';
+const BASE_URL = process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_BASE_URL ?? 'https://gra.speechflow.org';
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token');

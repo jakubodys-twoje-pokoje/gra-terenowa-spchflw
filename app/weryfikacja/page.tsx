@@ -21,7 +21,7 @@ function VerifyContent() {
       if (r.ok) {
         const user = await r.json();
         if (user?.userId) {
-          localStorage.setItem('karwia_user_id', user.userId);
+          localStorage.setItem('speechflow_user_id', user.userId);
         }
       }
       setTimeout(() => router.push('/'), 2000);

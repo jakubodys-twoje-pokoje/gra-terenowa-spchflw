@@ -43,8 +43,8 @@ interface Props {
   onUserLocation?: (lat: number, lng: number) => void;
 }
 
-const KARWIA_CENTER: [number, number] = [54.828701688893595, 18.210140614060844];
-const LOGO_URL = '/icons/karwia-logo.webp';
+const MAP_DEFAULT_CENTER: [number, number] = [54.828701688893595, 18.210140614060844];
+const LOGO_URL = '/icons/icon-192.png';
 
 function getScale(zoom: number): number {
   // At zoom 15 → 0.65 · At zoom 16 → 0.80 · At zoom 18 → 1.00 · At zoom 21 → 1.50
@@ -88,7 +88,7 @@ function makeIcon(L: any, b: MapBuilding, scale: number) {
     const tip = Math.round(11 * scale);
     const tipH = Math.round(7 * scale);
     const rw  = Math.max(2, Math.round(3 * scale));
-    // Always show the Karwia logo (or building photo if available)
+    // Always show the logo (or building photo if available)
     const src = b.imageUrl ?? LOGO_URL;
     html = `<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:${dropShadow(0.5)}">
       ${photoCircle(src, sz, '#F0A500', rw)}
@@ -104,13 +104,13 @@ function makeIcon(L: any, b: MapBuilding, scale: number) {
     const rw  = Math.max(1, Math.round(2 * scale));
     const src = b.imageUrl;
     const body = src
-      ? photoCircle(src, sz, '#0F5F92', rw)
-      : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:#0F5F92;
+      ? photoCircle(src, sz, '#015687', rw)
+      : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:#015687;
            outline:${rw}px solid white;box-sizing:border-box;
            display:flex;align-items:center;justify-content:center;font-size:${Math.round(13 * scale)}px;color:white;font-weight:bold;">✓</div>`;
     html = `<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:${dropShadow(0.35)}">
       ${body}
-      ${svgPointer('#0F5F92', tip)}
+      ${svgPointer('#015687', tip)}
     </div>`;
     iconSize   = [sz + 6, sz + tipH + 4];
     iconAnchor = [Math.round((sz + 6) / 2), sz + tipH + 4];
@@ -123,8 +123,8 @@ function makeIcon(L: any, b: MapBuilding, scale: number) {
     const src = b.outlineImageUrl ?? b.imageUrl;
     const body = src
       ? photoCircle(src, sz, '#9CA3AF', rw, true)
-      : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:#0F5F92;
-           outline:${rw}px solid white;border:${rw}px solid #0F5F92;box-sizing:border-box;
+      : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:#015687;
+           outline:${rw}px solid white;border:${rw}px solid #015687;box-sizing:border-box;
            display:flex;align-items:center;justify-content:center;overflow:hidden;">
            <img src="${LOGO_URL}" style="width:70%;height:70%;object-fit:contain;display:block;filter:brightness(0) invert(1);opacity:0.7;" />
          </div>`;
@@ -144,7 +144,7 @@ function makeIcon(L: any, b: MapBuilding, scale: number) {
 export default function MapComponent({
   buildings,
   players = [],
-  center = KARWIA_CENTER,
+  center = MAP_DEFAULT_CENTER,
   zoom = 17,
   onBuildingClick,
   onMapClick,
@@ -283,7 +283,7 @@ export default function MapComponent({
           } else {
             marker.bindPopup(
               `<strong style="font-family:Kanit,sans-serif">${b.name}</strong>` +
-              (b.discovered ? '<br/><span style="color:#0F5F92;font-size:12px">✓ Odkryty</span>' : ''),
+              (b.discovered ? '<br/><span style="color:#015687;font-size:12px">✓ Odkryty</span>' : ''),
             );
           }
           markersRef.current.push({ marker, building: b });

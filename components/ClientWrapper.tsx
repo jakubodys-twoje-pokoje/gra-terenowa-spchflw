@@ -5,10 +5,10 @@ import { useEffect, useRef } from 'react';
 
 function getSessionId(): string {
   try {
-    let id = sessionStorage.getItem('karwia_session_id');
+    let id = sessionStorage.getItem('speechflow_session_id');
     if (!id) {
       id = crypto.randomUUID();
-      sessionStorage.setItem('karwia_session_id', id);
+      sessionStorage.setItem('speechflow_session_id', id);
     }
     return id;
   } catch {
@@ -26,7 +26,7 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
     lastTracked.current = pathname;
 
     const sessionId = getSessionId();
-    const userId = (() => { try { return localStorage.getItem('karwia_user_id'); } catch { return null; } })();
+    const userId = (() => { try { return localStorage.getItem('speechflow_user_id'); } catch { return null; } })();
 
     fetch('/api/analytics/pageview', {
       method: 'POST',

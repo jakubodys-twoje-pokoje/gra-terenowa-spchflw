@@ -22,8 +22,8 @@ interface RankEntry {
 }
 
 function getUserId(): string {
-  let id = localStorage.getItem('karwia_user_id');
-  if (!id) { id = crypto.randomUUID(); localStorage.setItem('karwia_user_id', id); }
+  let id = localStorage.getItem('speechflow_user_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('speechflow_user_id', id); }
   return id;
 }
 

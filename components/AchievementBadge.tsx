@@ -13,12 +13,12 @@ interface Props {
   unlockedAt?: string;
 }
 
-const SITE_URL = 'https://odkrywca.karwia.pl';
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://gra.speechflow.org';
 
 export default function AchievementBadge({ icon, name, description, color, unlocked, unlockedAt }: Props) {
   const [open, setOpen] = useState(false);
 
-  const shareText = `Zdobyłem odznakę „${name}" w grze terenowej Karwia! 🏆 Dołącz do zabawy:`;
+  const shareText = `Zdobyłem odznakę „${name}" w logopedycznej grze terenowej SpeechFlow! 🏆 Dołącz do zabawy:`;
 
   const handleShare = async () => {
     if (navigator.share) {

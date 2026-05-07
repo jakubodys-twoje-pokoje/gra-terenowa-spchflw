@@ -52,8 +52,8 @@ interface NearbyBuilding {
 }
 
 function getUserId(): string {
-  let id = localStorage.getItem('karwia_user_id');
-  if (!id) { id = crypto.randomUUID(); localStorage.setItem('karwia_user_id', id); }
+  let id = localStorage.getItem('speechflow_user_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('speechflow_user_id', id); }
   return id;
 }
 
@@ -117,7 +117,7 @@ export default function BudynekPage() {
     // Toasts and achievements only on a fresh scan
     if (!isScan) return;
 
-    const celebratedKey = `karwia_celebrated_${id}`;
+    const celebratedKey = `speechflow_celebrated_${id}`;
     if (localStorage.getItem(celebratedKey)) return;
     localStorage.setItem(celebratedKey, '1');
 
@@ -131,7 +131,7 @@ export default function BudynekPage() {
     const allAchievements: Array<{ id: number; name: string; unlocked: boolean }> = await achRes.json();
 
     // Compare with previously-seen unlocked set stored in localStorage
-    const prevKey = `karwia_prev_ach_${userId}`;
+    const prevKey = `speechflow_prev_ach_${userId}`;
     const prevUnlocked: number[] = JSON.parse(localStorage.getItem(prevKey) ?? '[]');
     const prevSet = new Set(prevUnlocked);
 

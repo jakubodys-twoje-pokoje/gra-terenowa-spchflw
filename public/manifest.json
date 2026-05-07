@@ -1,11 +1,11 @@
 {
-  "name": "Karwia – Gra Terenowa",
-  "short_name": "Karwia",
-  "description": "Odkryj nadmorskie skarby Karwi!",
+  "name": "SpeechFlow – Gra Terenowa",
+  "short_name": "SpeechFlow",
+  "description": "Odkryj miejsca istotne logopedycznie i walcz o 2 wejściówki na SpeechLab 2026!",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0F5F92",
-  "theme_color": "#0F5F92",
+  "background_color": "#015687",
+  "theme_color": "#015687",
   "orientation": "portrait",
   "icons": [
     {

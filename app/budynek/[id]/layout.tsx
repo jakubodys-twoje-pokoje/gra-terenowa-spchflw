@@ -13,17 +13,17 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   });
 
   if (!building) {
-    return { title: 'Karwia – Gra Terenowa' };
+    return { title: 'SpeechFlow – Logopedyczna Gra Terenowa' };
   }
 
-  const title = `Odkryłem ${building.name} w Karwi! ⚓`;
-  const description = `${building.description.slice(0, 150)}… Zagraj w grę terenową w Karwi!`;
+  const title = `Odkryłem ${building.name} w grze SpeechFlow! 🗺️`;
+  const description = `${building.description.slice(0, 150)}… Zagraj w logopedyczną grę terenową SpeechFlow!`;
   const images = building.imageUrl
     ? [{ url: building.imageUrl, width: 1200, height: 630, alt: building.name }]
-    : [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: 'Karwia Gra Terenowa' }];
+    : [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: 'SpeechFlow Gra Terenowa' }];
 
   return {
-    title: `${building.name} · Karwia Gra Terenowa`,
+    title: `${building.name} · SpeechFlow Gra Terenowa`,
     description,
     openGraph: {
       title,

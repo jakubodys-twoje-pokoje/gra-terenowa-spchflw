@@ -550,7 +550,7 @@ export default function AdminPage() {
           <div className="text-center mb-6">
             <Lock size={32} className="text-ocean-500 mx-auto mb-2" />
             <h1 className="font-extrabold text-ocean-900 text-xl">Panel Administracyjny</h1>
-            <p className="text-gray-400 text-sm mt-1">Karwia – Gra Terenowa</p>
+            <p className="text-gray-400 text-sm mt-1">SpeechFlow – Logopedyczna Gra Terenowa</p>
           </div>
           <form onSubmit={handleAuth} className="space-y-4">
             <input type="password" placeholder="Hasło administratora" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ocean-400" />
@@ -846,7 +846,7 @@ export default function AdminPage() {
                   {pickingCoords ? 'Kliknij na mapie po prawej…' : 'Wybierz lokalizację na mapie'}
                 </button>
 
-                <input required placeholder="URL kodu QR (np. https://karwia.pl/.../11)" value={form.qrUrl} onChange={(e) => {
+                <input required placeholder="URL kodu QR (np. https://gra.speechflow.org/qr/11)" value={form.qrUrl} onChange={(e) => {
                   const url = e.target.value;
                   const match = /(\d+)\/?$/.exec(url);
                   setForm((f) => ({ ...f, qrUrl: url }));
@@ -1004,7 +1004,7 @@ export default function AdminPage() {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `karwia-users-${new Date().toISOString().slice(0, 10)}.csv`;
+                    a.download = `speechflow-users-${new Date().toISOString().slice(0, 10)}.csv`;
                     a.click();
                     URL.revokeObjectURL(url);
                   }}

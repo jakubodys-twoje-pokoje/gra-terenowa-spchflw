@@ -10,9 +10,9 @@ import ServiceWorkerRegistrar from '@/components/ServiceWorkerRegistrar';
 import InstallPrompt from '@/components/InstallPrompt';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'https://karwia.app'),
-  title: 'Karwia – Gra Terenowa',
-  description: 'Odkryj tajemnice nadmorskiej Karwi! Skanuj kody QR przy budynkach i zbieraj odznaki odkrywcy.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'https://gra.speechflow.org'),
+  title: 'SpeechFlow – Logopedyczna Gra Terenowa',
+  description: 'Odkryj miejsca istotne logopedycznie! Skanuj kody QR, zdobywaj odznaki i walcz o 2 wejściówki na SpeechLab 2026.',
   manifest: '/manifest.json',
   icons: {
     icon: [
@@ -24,16 +24,16 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: 'Karwia – Gra Terenowa',
-    description: 'Odkryj tajemnice nadmorskiej Karwi! Skanuj kody QR przy budynkach i zbieraj odznaki odkrywcy.',
+    title: 'SpeechFlow – Logopedyczna Gra Terenowa',
+    description: 'Odkryj miejsca istotne logopedycznie i walcz o 2 wejściówki na SpeechLab 2026!',
     type: 'website',
     locale: 'pl_PL',
-    images: [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: 'Karwia Gra Terenowa' }],
+    images: [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: 'SpeechFlow Gra Terenowa' }],
   },
   twitter: {
     card: 'summary',
-    title: 'Karwia – Gra Terenowa',
-    description: 'Odkryj tajemnice nadmorskiej Karwi!',
+    title: 'SpeechFlow – Logopedyczna Gra Terenowa',
+    description: 'Odkryj miejsca istotne logopedycznie i walcz o 2 wejściówki na SpeechLab 2026!',
     images: ['/icons/icon-512.png'],
   },
 };
@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#0F5F92',
+  themeColor: '#015687',
   viewportFit: 'cover',
 };
 

@@ -8,7 +8,7 @@ import { fetchMe } from '@/lib/useAuth';
 
 function getGuestUserId(): string {
   if (typeof window === 'undefined') return '';
-  return localStorage.getItem('karwia_user_id') ?? '';
+  return localStorage.getItem('speechflow_user_id') ?? '';
 }
 
 export default function LoginPage() {
@@ -39,7 +39,7 @@ export default function LoginPage() {
     if (res.ok) {
       const data = await res.json();
       // Store the account userId in localStorage so all screens use it
-      localStorage.setItem('karwia_user_id', data.userId);
+      localStorage.setItem('speechflow_user_id', data.userId);
       await fetchMe();
       router.push('/');
     } else {

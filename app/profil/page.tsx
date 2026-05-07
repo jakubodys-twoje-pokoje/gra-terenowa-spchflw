@@ -15,8 +15,8 @@ function guestNumber(userId: string): string {
 }
 
 function getUserId(): string {
-  let id = localStorage.getItem('karwia_user_id');
-  if (!id) { id = crypto.randomUUID(); localStorage.setItem('karwia_user_id', id); }
+  let id = localStorage.getItem('speechflow_user_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('speechflow_user_id', id); }
   return id;
 }
 
@@ -362,7 +362,7 @@ function VerifiedView({ user, onLogout }: { user: { email: string; nickname: str
       body: JSON.stringify({ password: deletePassword }),
     });
     if (res.ok) {
-      localStorage.removeItem('karwia_user_id');
+      localStorage.removeItem('speechflow_user_id');
       router.push('/');
     } else {
       const d = await res.json().catch(() => ({}));
@@ -636,7 +636,7 @@ export default function ProfilPage() {
 
   const handleLogout = useCallback(async () => {
     await logout();
-    localStorage.removeItem('karwia_user_id');
+    localStorage.removeItem('speechflow_user_id');
     router.push('/');
   }, [router]);
 

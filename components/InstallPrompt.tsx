@@ -10,7 +10,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-const STORAGE_KEY = 'karwia_install_dismissed';
+const STORAGE_KEY = 'speechflow_install_dismissed';
 // Don't re-show for 14 days after dismissal
 const DISMISS_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 
@@ -131,8 +131,9 @@ export default function InstallPrompt() {
 
         {/* Hero */}
         <div className="bg-gradient-to-br from-ocean-500 to-ocean-700 mx-4 mt-2 rounded-2xl px-5 py-4 text-white flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/karwia-logo.webp" alt="Karwia" className="w-12 h-auto shrink-0 drop-shadow-md" />
+          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0 text-xl font-black text-white leading-none">
+            SF
+          </div>
           <div>
             <h2 className="text-base font-extrabold leading-tight">Dodaj skrót na ekran</h2>
             <p className="text-ocean-200 text-xs mt-0.5">Szybki dostęp do gry w jednym kliknięciu</p>

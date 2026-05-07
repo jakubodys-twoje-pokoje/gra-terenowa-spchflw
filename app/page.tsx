@@ -23,19 +23,19 @@ interface Building {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  checza:    '🛖 Chëcza',
-  zagroda:   '🏡 Zagroda',
-  karczma:   '🍺 Karczma',
-  pensjonat: '🛏️ Pensjonat',
-  sakralny:  '⛪ Sakralny',
-  natura:    '🌲 Natura',
-  morze:     '🐟 Morze',
-  historia:  '🏛️ Historia',
+  poradnia:    '🏥 Poradnia',
+  szkola:      '🏫 Szkoła',
+  przedszkole: '🎒 Przedszkole',
+  uczelnia:    '🎓 Uczelnia',
+  centrum:     '🏢 Centrum',
+  historia:    '🏛️ Historia',
+  kultura:     '🎭 Kultura',
+  instytut:    '🔬 Instytut',
 };
 
 function getUserId(): string {
-  let id = localStorage.getItem('karwia_user_id');
-  if (!id) { id = crypto.randomUUID(); localStorage.setItem('karwia_user_id', id); }
+  let id = localStorage.getItem('speechflow_user_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('speechflow_user_id', id); }
   return id;
 }
 
@@ -84,7 +84,7 @@ function generateTip(
 
   // ── Almost done
   if (remaining === 0) {
-    pool.push({ text: 'Odkryłeś wszystkie miejsca w Karwi! Jesteś legendą!', icon: '🎉', w: 10 });
+    pool.push({ text: 'Odkryłeś wszystkie miejsca! Jesteś mistrzem logopedycznej mapy! 🎟️', icon: '🎉', w: 10 });
   } else if (remaining === 1) {
     pool.push({ text: 'Zostało Ci tylko 1 nieodkryte miejsce — idź po nie!', icon: '🏆', w: 6 });
   } else if (remaining === 2) {
@@ -109,7 +109,7 @@ function generateTip(
   // ── Progress
   if (discovered > 0 && remaining > 0) {
     const pct = Math.round((discovered / total) * 100);
-    pool.push({ text: `Odkryłeś ${discovered} z ${total} miejsc — ${pct}% Karwi zbadane!`, icon: '🗺️', w: 1 });
+    pool.push({ text: `Odkryłeś ${discovered} z ${total} miejsc — ${pct}% mapy zbadane!`, icon: '🗺️', w: 1 });
   }
 
   // ── Leaderboard
@@ -119,7 +119,8 @@ function generateTip(
 
   // ── Generic
   if (remaining > 0) {
-    pool.push({ text: `Karwia kryje jeszcze ${remaining} nieodkrytych tajemnic...`, icon: '🔍', w: 1 });
+    pool.push({ text: `Na mapie kryje się jeszcze ${remaining} nieodkrytych miejsc...`, icon: '🔍', w: 1 });
+    pool.push({ text: `Odkryj wszystkie miejsca i walcz o 2 wejściówki na SpeechLab 2026! 🎟️`, icon: '🏆', w: 2 });
   }
 
   // ── Guest nudge
@@ -217,23 +218,23 @@ export default function MapPage() {
   // Show instructions after welcome modal is dismissed (guest flow)
   useEffect(() => {
     const onDismissed = () => {
-      if (!localStorage.getItem('karwia_instructions_shown')) {
+      if (!localStorage.getItem('speechflow_instructions_shown')) {
         setTimeout(() => setShowInstructions(true), 380);
       }
     };
-    window.addEventListener('karwia:welcome-dismissed', onDismissed);
-    return () => window.removeEventListener('karwia:welcome-dismissed', onDismissed);
+    window.addEventListener('speechflow:welcome-dismissed', onDismissed);
+    return () => window.removeEventListener('speechflow:welcome-dismissed', onDismissed);
   }, []);
 
   // Show instructions for logged-in users on first visit (no welcome modal shown to them)
   useEffect(() => {
     if (!user) return;
-    if (localStorage.getItem('karwia_instructions_shown')) return;
+    if (localStorage.getItem('speechflow_instructions_shown')) return;
     setShowInstructions(true);
   }, [user]);
 
   const closeInstructions = () => {
-    localStorage.setItem('karwia_instructions_shown', '1');
+    localStorage.setItem('speechflow_instructions_shown', '1');
     setShowInstructions(false);
   };
 
@@ -496,7 +497,7 @@ export default function MapPage() {
                 <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
                   {isDiscovered
                     ? selected.description
-                    : '🔍 Znajdź ten obiekt w Karwi i zeskanuj kod QR, by go odkryć!'}
+                    : '🔍 Znajdź to miejsce i zeskanuj kod QR, by je odkryć!'}
                 </p>
 
                 <div className="flex gap-3">
@@ -548,8 +549,8 @@ export default function MapPage() {
               <div className="flex gap-3 items-start">
                 <span className="text-2xl shrink-0">🗺️</span>
                 <div>
-                  <p className="font-bold text-ocean-900 mb-0.5">Eksploruj Karwię</p>
-                  <p>Odwiedź oznaczone miejsca na mapie — to budynki, zabytki i ciekawostki w Karwi.</p>
+                  <p className="font-bold text-ocean-900 mb-0.5">Eksploruj mapę</p>
+                  <p>Odwiedź oznaczone miejsca istotne logopedycznie — poradnie, szkoły, uczelnie i inne obiekty.</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start">
@@ -567,10 +568,10 @@ export default function MapPage() {
                 </div>
               </div>
               <div className="flex gap-3 items-start">
-                <span className="text-2xl shrink-0">📍</span>
+                <span className="text-2xl shrink-0">🎟️</span>
                 <div>
-                  <p className="font-bold text-ocean-900 mb-0.5">Nawigacja GPS</p>
-                  <p>Skorzystaj z przycisku <strong>Najbliżej</strong>, żeby znaleźć najbliższe nieodkryte miejsce, lub z celownika, by zobaczyć swoją pozycję na mapie.</p>
+                  <p className="font-bold text-ocean-900 mb-0.5">Nagroda: 2 wejściówki na SpeechLab 2026</p>
+                  <p>Odkryj wszystkie miejsca i walcz o 2 wejściówki na konferencję <strong>SpeechLab 2026</strong> (30 maja, Warszawa)!</p>
                 </div>
               </div>
             </div>

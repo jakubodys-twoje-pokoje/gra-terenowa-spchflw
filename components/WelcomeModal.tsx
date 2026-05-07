@@ -3,14 +3,13 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
-import PartnerLogos from '@/components/PartnerLogos';
-import { UserPlus, LogIn, ArrowRight, MapPin, Trophy, Smartphone } from 'lucide-react';
+import { UserPlus, LogIn, ArrowRight, MapPin, Trophy, Smartphone, Ticket } from 'lucide-react';
 
-const STORAGE_KEY = 'karwia_welcomed';
+const STORAGE_KEY = 'speechflow_welcomed';
 
 const BENEFITS = [
   { icon: Smartphone, text: 'Zachowaj postęp na każdym urządzeniu' },
-  { icon: Trophy,     text: 'Dołącz do rankingu odkrywców Karwi' },
+  { icon: Trophy,     text: 'Dołącz do rankingu odkrywców' },
   { icon: MapPin,     text: 'Zbieraj odznaki i śledź trasę odkryć' },
 ];
 
@@ -47,7 +46,7 @@ export default function WelcomeModal() {
 
   const dismiss = () => {
     sessionStorage.setItem(STORAGE_KEY, '1');
-    window.dispatchEvent(new CustomEvent('karwia:welcome-dismissed'));
+    window.dispatchEvent(new CustomEvent('speechflow:welcome-dismissed'));
     setAnimateIn(false);
     setTimeout(() => setVisible(false), 320);
   };
@@ -58,7 +57,7 @@ export default function WelcomeModal() {
   };
 
   const goRegister = () => {
-    const guestId = typeof window !== 'undefined' ? (localStorage.getItem('karwia_user_id') ?? '') : '';
+    const guestId = typeof window !== 'undefined' ? (localStorage.getItem('speechflow_user_id') ?? '') : '';
     go(`/rejestracja?guest=${guestId}`);
   };
 
@@ -93,12 +92,24 @@ export default function WelcomeModal() {
         </div>
 
         {/* Hero */}
-        <div className="bg-gradient-to-br from-ocean-500 to-ocean-700 mx-4 mt-2 rounded-2xl px-5 py-3 text-white flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/karwia-logo.webp" alt="Karwia" className="w-12 h-auto shrink-0 drop-shadow-md" />
+        <div className="bg-gradient-to-br from-ocean-500 to-ocean-700 mx-4 mt-2 rounded-2xl px-5 py-3 text-white">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0 text-2xl font-black text-white leading-none">
+              SF
+            </div>
+            <div>
+              <h2 className="text-base font-extrabold leading-tight">SpeechFlow – Gra Terenowa</h2>
+              <p className="text-ocean-200 text-xs mt-0.5">Odkrywaj miejsca istotne logopedycznie</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Prize banner */}
+        <div className="mx-4 mt-3 rounded-2xl bg-gradient-to-r from-sand-500 to-sand-600 px-4 py-3 flex items-center gap-3">
+          <Ticket size={22} className="text-white shrink-0" />
           <div>
-            <h2 className="text-base font-extrabold leading-tight">Witaj w Karwi!</h2>
-            <p className="text-ocean-200 text-xs mt-0.5">Odkrywaj miejsca, zdobywaj odznaki</p>
+            <p className="text-white text-xs font-extrabold leading-tight">Nagroda główna: 2 wejściówki na SpeechLab 2026</p>
+            <p className="text-white/80 text-[11px] mt-0.5">30 maja 2026 · Golden Floor Tower, Warszawa</p>
           </div>
         </div>
 
