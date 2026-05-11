@@ -94,8 +94,10 @@ export default function WelcomeModal() {
         {/* Hero */}
         <div className="bg-gradient-to-br from-ocean-600 to-sand-700 mx-4 mt-2 rounded-2xl px-5 py-3 text-white">
           <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icons/speechflow-logo.png" alt="SpeechFlow" className="w-12 h-12 object-contain shrink-0 drop-shadow-md" />
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 overflow-hidden p-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/icons/speechflow-logo.png" alt="SpeechFlow" className="w-full h-full object-contain" />
+            </div>
             <div>
               <h2 className="text-base font-extrabold leading-tight">SpeechFlow – Gra Terenowa</h2>
               <p className="text-white/70 text-xs mt-0.5">Odkrywaj miejsca istotne logopedycznie</p>

@@ -417,7 +417,7 @@ export default function MapPage() {
           <button
             onClick={handleNearest}
             disabled={nearestLoading || buildings.length === 0}
-            className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg px-3.5 py-3 flex items-center gap-2 hover:bg-white active:scale-95 transition-all disabled:opacity-50"
+            className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg px-4 py-3.5 flex items-center gap-2 hover:bg-white active:scale-95 transition-all disabled:opacity-50"
             title="Najbliższy nieodkryty obiekt"
           >
             <Navigation size={18} className={`text-ocean-500 ${nearestLoading ? 'animate-pulse' : ''}`} />
@@ -427,7 +427,7 @@ export default function MapPage() {
           {/* Center on user */}
           <button
             onClick={handleCenterOnUser}
-            className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 flex items-center justify-center hover:bg-white active:scale-95 transition-all"
+            className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg p-3.5 flex items-center justify-center hover:bg-white active:scale-95 transition-all"
             title="Moja lokalizacja"
           >
             <Crosshair size={18} className="text-ocean-500" />
@@ -436,7 +436,7 @@ export default function MapPage() {
           {/* Help / instructions */}
           <button
             onClick={() => setShowInstructions(true)}
-            className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 flex items-center justify-center hover:bg-white active:scale-95 transition-all"
+            className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg p-3.5 flex items-center justify-center hover:bg-white active:scale-95 transition-all"
             title="Jak grać?"
           >
             <HelpCircle size={18} className="text-ocean-500" />

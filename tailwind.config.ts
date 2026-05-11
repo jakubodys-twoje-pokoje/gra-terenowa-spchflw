@@ -9,36 +9,36 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // SpeechFlow primary — cyan/teal from logo
+        // SpeechFlow — dark navy as primary (high contrast), cyan as accent
         ocean: {
           50:  '#E0F9FC',
           100: '#B3EFF5',
           200: '#7DE4EE',
           300: '#3DD5E6',
-          400: '#0ECADC',
-          500: '#00C4D4',  // primary — SpeechFlow cyan
-          600: '#009BAA',
-          700: '#007280',
-          800: '#004D57',
-          900: '#00272D',
+          400: '#00C4D4',  // bright cyan — accent / highlights only
+          500: '#0D3A52',  // dark navy — PRIMARY (buttons, active text)
+          600: '#0A2D42',
+          700: '#072338',
+          800: '#041828',
+          900: '#020D18',
         },
-        // SpeechFlow dark navy — from logo rocket/overlap
+        // SpeechFlow accent — mid teal for secondary elements
         sand: {
-          50:  '#E8EEF3',
-          100: '#C4D3DD',
-          200: '#9DB6C6',
-          300: '#6F95AB',
-          400: '#477A95',
-          500: '#1B6080',  // mid navy accent
-          600: '#154E6A',
-          700: '#0D3A52',  // dark navy — SpeechFlow brand dark
-          800: '#082A3C',
-          900: '#041A26',
+          50:  '#E0F9FC',
+          100: '#B3EFF5',
+          200: '#7DE4EE',
+          300: '#3DD5E6',
+          400: '#00C4D4',
+          500: '#009BAA',  // mid teal accent
+          600: '#007A88',
+          700: '#005B68',
+          800: '#003C48',
+          900: '#001E28',
         },
         sea: {
           light: '#E0F9FC',
           mid:   '#7DE4EE',
-          dark:  '#00C4D4',
+          dark:  '#0D3A52',
         },
       },
       fontFamily: {
@@ -51,8 +51,8 @@ const config: Config = {
         '4xl': '2rem',
       },
       boxShadow: {
-        card: '0 4px 24px rgba(0,196,212,0.12)',
-        'card-hover': '0 8px 32px rgba(0,196,212,0.22)',
+        card: '0 4px 24px rgba(13,58,82,0.10)',
+        'card-hover': '0 8px 32px rgba(13,58,82,0.20)',
       },
     },
   },
