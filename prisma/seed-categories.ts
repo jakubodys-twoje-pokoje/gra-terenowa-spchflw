@@ -7,14 +7,14 @@ const adapter = new PrismaBetterSqlite3({ url: dbUrl });
 const prisma = new PrismaClient({ adapter });
 
 const categories = [
-  { value: 'checza',    label: 'Chëcza',    icon: '🛖', order: 1 },
-  { value: 'zagroda',   label: 'Zagroda',   icon: '🏡', order: 2 },
-  { value: 'karczma',   label: 'Karczma',   icon: '🍺', order: 3 },
-  { value: 'pensjonat', label: 'Pensjonat', icon: '🛏️', order: 4 },
-  { value: 'sakralny',  label: 'Sakralny',  icon: '⛪', order: 5 },
-  { value: 'natura',    label: 'Natura',    icon: '🌲', order: 6 },
-  { value: 'morze',     label: 'Morze',     icon: '🐟', order: 7 },
-  { value: 'historia',  label: 'Historia',  icon: '🏛️', order: 8 },
+  { value: 'poradnia',    label: 'Poradnia',    icon: '🏥', order: 1 },
+  { value: 'szkola',      label: 'Szkoła',      icon: '🏫', order: 2 },
+  { value: 'przedszkole', label: 'Przedszkole', icon: '🎒', order: 3 },
+  { value: 'uczelnia',    label: 'Uczelnia',    icon: '🎓', order: 4 },
+  { value: 'centrum',     label: 'Centrum',     icon: '🏢', order: 5 },
+  { value: 'historia',    label: 'Historia',    icon: '🏛️', order: 6 },
+  { value: 'kultura',     label: 'Kultura',     icon: '🎭', order: 7 },
+  { value: 'instytut',    label: 'Instytut',    icon: '🔬', order: 8 },
 ];
 
 async function main() {

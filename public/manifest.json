@@ -4,8 +4,8 @@
   "description": "Odkryj miejsca istotne logopedycznie i walcz o 2 wejściówki na SpeechLab 2026!",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#015687",
-  "theme_color": "#015687",
+  "background_color": "#0D3A52",
+  "theme_color": "#00C4D4",
   "orientation": "portrait",
   "icons": [
     {

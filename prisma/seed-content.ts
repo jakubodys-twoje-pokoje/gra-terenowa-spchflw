@@ -15,11 +15,11 @@ const dbUrl = raw.startsWith('file:') ? raw.slice(5) : raw;
 const adapter = new PrismaBetterSqlite3({ url: dbUrl });
 const prisma  = new PrismaClient({ adapter });
 
-const OPERATOR_NAME    = 'Sołectwo Karwia';
-const OPERATOR_ADDRESS = 'ul. Wojska Polskiego, 84-105 Karwia';
-const OPERATOR_EMAIL   = 'kontakt@karwia.pl';
-const APP_URL          = 'https://odkrywca.karwia.pl';
-const APP_NAME         = 'Odkrywca Karwi';
+const OPERATOR_NAME    = 'SpeechFlow sp. z o.o.';
+const OPERATOR_ADDRESS = 'Warszawa';
+const OPERATOR_EMAIL   = 'kontakt@speechflow.org';
+const APP_URL          = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://gra.speechflow.org';
+const APP_NAME         = 'SpeechFlow – Gra Terenowa';
 
 const REGULAMIN = /* html */`
 <h2>§ 1. Postanowienia ogólne</h2>
@@ -27,7 +27,7 @@ const REGULAMIN = /* html */`
 <p>Korzystanie z aplikacji oznacza akceptację niniejszego Regulaminu w całości. Osoby niepełnoletnie mogą korzystać z aplikacji wyłącznie za zgodą rodziców lub opiekunów prawnych.</p>
 
 <h2>§ 2. Opis aplikacji</h2>
-<p>${APP_NAME} to gra terenowa polegająca na odkrywaniu oznaczonych miejsc w Karwi poprzez skanowanie kodów QR umieszczonych przy obiektach. Za każde odkrycie użytkownik zdobywa punkty i odznaki. Aplikacja dostępna jest bezpłatnie.</p>
+<p>${APP_NAME} to logopedyczna gra terenowa polegająca na odkrywaniu miejsc istotnych logopedycznie poprzez skanowanie kodów QR. Za każde odkrycie użytkownik zdobywa punkty i odznaki. Nagrodą główną są 2 wejściówki na konferencję SpeechLab 2026. Aplikacja dostępna jest bezpłatnie.</p>
 
 <h2>§ 3. Rejestracja i konto użytkownika</h2>
 <p>Korzystanie z podstawowych funkcji aplikacji jest możliwe bez rejestracji (tryb gościa). Rejestracja konta pozwala na zapisanie postępów, uczestnictwo w rankingu i zdobywanie odznak.</p>
@@ -36,7 +36,7 @@ const REGULAMIN = /* html */`
 <p>Operator zastrzega sobie prawo do usunięcia konta, które narusza postanowienia Regulaminu, zawiera obraźliwą treść lub zostało założone w celu działania na szkodę innych użytkowników.</p>
 
 <h2>§ 4. Zasady gry</h2>
-<p>Gra polega na fizycznym odnajdywaniu obiektów w Karwi i skanowaniu kodów QR umieszczonych przy tabliczkach informacyjnych. Każde odkrycie rejestrowane jest jednorazowo na danym koncie.</p>
+<p>Gra polega na fizycznym odnajdywaniu oznaczonych miejsc istotnych logopedycznie i skanowaniu kodów QR umieszczonych przy tabliczkach informacyjnych. Każde odkrycie rejestrowane jest jednorazowo na danym koncie.</p>
 <p>Zabronione jest:</p>
 <ul>
   <li>udostępnianie kodów QR w sposób umożliwiający ich skanowanie bez fizycznej obecności przy obiekcie,</li>
@@ -50,7 +50,7 @@ const REGULAMIN = /* html */`
 <p>Rejestrując konto i podając adres e-mail, użytkownik wyraża zgodę na otrzymywanie od Operatora informacji handlowych drogą elektroniczną, w tym:</p>
 <ul>
   <li>powiadomień o aktualizacjach i nowych funkcjach aplikacji,</li>
-  <li>informacji o wydarzeniach organizowanych w Karwi,</li>
+  <li>informacji o wydarzeniach SpeechFlow, w tym konferencji SpeechLab,</li>
   <li>ofert partnerów projektu,</li>
   <li>newslettera związanego z projektem „${APP_NAME}".</li>
 </ul>
@@ -103,9 +103,9 @@ const POLITYKA = /* html */`
 <p>Adres e-mail podany podczas rejestracji może być wykorzystywany do przesyłania:</p>
 <ul>
   <li>powiadomień o nowych funkcjach i aktualizacjach aplikacji ${APP_NAME},</li>
-  <li>informacji o wydarzeniach turystycznych i kulturalnych w Karwi,</li>
-  <li>ofert i promocji partnerów projektu (Twoje Pokoje, karwia.pl, Gmina Władysławowo),</li>
-  <li>sezonowych komunikatów związanych z grą terenową.</li>
+  <li>informacji o konferencjach i wydarzeniach SpeechFlow,</li>
+  <li>ofert i promocji partnerów projektu SpeechFlow,</li>
+  <li>komunikatów związanych z grą terenową i nagrodami.</li>
 </ul>
 <p>Masz prawo w każdej chwili zrezygnować z otrzymywania wiadomości marketingowych — wystarczy kliknąć link rezygnacji w dowolnej wiadomości e-mail lub napisać na <a href="mailto:${OPERATOR_EMAIL}">${OPERATOR_EMAIL}</a>. Rezygnacja nie powoduje usunięcia konta.</p>
 
