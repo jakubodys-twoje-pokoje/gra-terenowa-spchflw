@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
-import { UserPlus, LogIn, ArrowRight, MapPin, Trophy, Smartphone, Ticket } from 'lucide-react';
-
-const STORAGE_KEY = 'speechflow_welcomed';
+import { UserPlus, LogIn, MapPin, Trophy, Smartphone, Ticket } from 'lucide-react';
 
 const BENEFITS = [
   { icon: Smartphone, text: 'Zachowaj postęp na każdym urządzeniu' },
@@ -19,24 +17,23 @@ export default function WelcomeModal() {
   const searchParams = useSearchParams();
   const router       = useRouter();
 
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible]   = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
 
-  // Never show on admin or mid-scan redirect
   const skip =
     pathname === '/admin' ||
     pathname.startsWith('/admin/') ||
+    pathname === '/login' ||
+    pathname === '/rejestracja' ||
+    pathname === '/weryfikacja' ||
     searchParams.get('scan') === '1';
 
   useEffect(() => {
     if (skip) return;
-    if (loading) return;       // wait for auth check
-    if (user) return;          // logged in — no popup
+    if (loading) return;
+    if (user) return;
 
-    const seen = sessionStorage.getItem(STORAGE_KEY);
-    if (seen) return;          // already shown this session
-
-    // Small delay so the map/page renders first
+    // Show every visit — no session storage skip, registration is required
     const t = setTimeout(() => {
       setVisible(true);
       requestAnimationFrame(() => setAnimateIn(true));
@@ -44,30 +41,24 @@ export default function WelcomeModal() {
     return () => clearTimeout(t);
   }, [loading, user, skip]);
 
-  const dismiss = () => {
-    sessionStorage.setItem(STORAGE_KEY, '1');
-    window.dispatchEvent(new CustomEvent('speechflow:welcome-dismissed'));
+  const goRegister = () => {
     setAnimateIn(false);
     setTimeout(() => setVisible(false), 320);
+    router.push('/rejestracja');
   };
 
-  const go = (path: string) => {
-    dismiss();
-    router.push(path);
-  };
-
-  const goRegister = () => {
-    const guestId = typeof window !== 'undefined' ? (localStorage.getItem('speechflow_user_id') ?? '') : '';
-    go(`/rejestracja?guest=${guestId}`);
+  const goLogin = () => {
+    setAnimateIn(false);
+    setTimeout(() => setVisible(false), 320);
+    router.push('/login');
   };
 
   if (!visible) return null;
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Non-clickable backdrop — no guest dismiss */}
       <div
-        onClick={dismiss}
         className="fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         style={{ opacity: animateIn ? 1 : 0 }}
       />
@@ -75,11 +66,8 @@ export default function WelcomeModal() {
       {/* Sheet / card */}
       <div
         className={[
-          // mobile: bottom sheet
           'fixed bottom-0 inset-x-0 z-[1001] bg-white rounded-t-[2rem] shadow-2xl',
-          // desktop: centered card
           'md:inset-x-auto md:left-1/2 md:bottom-auto md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:rounded-[2rem]',
-          // animation
           'transition-all duration-300 ease-out',
           animateIn
             ? 'translate-y-0 md:scale-100 opacity-100'
@@ -92,7 +80,7 @@ export default function WelcomeModal() {
         </div>
 
         {/* Hero */}
-        <div className="bg-gradient-to-br from-ocean-600 to-sand-700 mx-4 mt-2 rounded-2xl px-5 py-3 text-white">
+        <div className="bg-gradient-to-br from-ocean-500 to-ocean-700 mx-4 mt-2 rounded-2xl px-5 py-3 text-white">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 overflow-hidden p-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -106,7 +94,7 @@ export default function WelcomeModal() {
         </div>
 
         {/* Prize banner */}
-        <div className="mx-4 mt-3 rounded-2xl bg-gradient-to-r from-sand-500 to-sand-600 px-4 py-3 flex items-center gap-3">
+        <div className="mx-4 mt-3 rounded-2xl bg-gradient-to-r from-ocean-400 to-ocean-500 px-4 py-3 flex items-center gap-3">
           <Ticket size={22} className="text-white shrink-0" />
           <div>
             <p className="text-white text-xs font-extrabold leading-tight">Nagroda główna: 2 wejściówki na SpeechLab 2026</p>
@@ -139,19 +127,11 @@ export default function WelcomeModal() {
           </button>
 
           <button
-            onClick={() => go('/login')}
+            onClick={goLogin}
             className="w-full bg-ocean-50 hover:bg-ocean-100 text-ocean-700 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-center gap-2"
           >
             <LogIn size={16} />
-            Zaloguj się
-          </button>
-
-          <button
-            onClick={dismiss}
-            className="w-full py-2.5 text-gray-400 text-sm font-semibold hover:text-gray-600 transition flex items-center justify-center gap-1.5"
-          >
-            Kontynuuj jako gość
-            <ArrowRight size={14} />
+            Mam już konto — zaloguj się
           </button>
         </div>
       </div>

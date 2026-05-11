@@ -1,18 +1,11 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { User, Save, Check, Camera, Loader2, LogOut, Lock, Mail, RefreshCw, Key, Trash2, Eye, EyeOff, AlertTriangle, X } from 'lucide-react';
+import { User, Save, Check, Camera, Loader2, LogOut, Mail, RefreshCw, Key, Trash2, Eye, EyeOff, AlertTriangle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth, logout, fetchMe } from '@/lib/useAuth';
 import PartnerLogos from '@/components/PartnerLogos';
-
-// Generate a stable display number from UUID
-function guestNumber(userId: string): string {
-  const hex = userId.replace(/-/g, '').slice(-6);
-  const num = parseInt(hex, 16) % 999999;
-  return String(num).padStart(6, '0');
-}
 
 function getUserId(): string {
   let id = localStorage.getItem('speechflow_user_id');
@@ -42,103 +35,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       </button>
       {open && (
         <p className="px-4 pb-4 text-sm text-gray-500 leading-relaxed">{a}</p>
-      )}
-    </div>
-  );
-}
-
-// ── GUEST VIEW ────────────────────────────────────────────────────────────────
-function GuestView({ onRegister }: { onRegister: () => void }) {
-  const [showPopup, setShowPopup] = useState(false);
-  const [guestId, setGuestId] = useState('');
-  const router = useRouter();
-
-  useEffect(() => { setGuestId(getUserId()); }, []);
-
-  return (
-    <div className="px-4 pt-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-2xl bg-gray-100 flex items-center justify-center">
-          <User size={22} className="text-gray-400" />
-        </div>
-        <div>
-          <h1 className="text-xl font-extrabold text-ocean-900">Profil</h1>
-          <p className="text-gray-400 text-xs">Tryb gościa</p>
-        </div>
-      </div>
-
-      {/* Guest avatar */}
-      <div className="flex justify-center mb-6">
-        <button onClick={() => setShowPopup(true)} className="relative">
-          <div className="w-24 h-24 rounded-full bg-gray-100 border-4 border-gray-200 flex items-center justify-center">
-            <User size={36} className="text-gray-300" />
-          </div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center border-2 border-white">
-            <Lock size={12} className="text-white" />
-          </div>
-        </button>
-      </div>
-
-      {/* Guest ID */}
-      <div className="bg-gray-50 rounded-3xl p-5 mb-5 text-center">
-        <p className="text-xs text-gray-400 mb-1">Twój numer gościa</p>
-        <p className="text-3xl font-extrabold text-gray-700 tracking-widest">#{guestId ? guestNumber(guestId) : '…'}</p>
-        <p className="text-xs text-gray-400 mt-2">Zarejestruj się, by wybrać własny pseudonim</p>
-      </div>
-
-      {/* Locked fields */}
-      {['Pseudonim', 'Adres e-mail', 'Miejscowość'].map((label) => (
-        <button key={label} onClick={() => setShowPopup(true)}
-          className="w-full flex items-center gap-3 border border-gray-100 rounded-2xl px-4 py-3 mb-3 bg-gray-50 text-left">
-          <Lock size={14} className="text-gray-300 shrink-0" />
-          <span className="text-sm text-gray-300">{label}</span>
-        </button>
-      ))}
-
-      <button onClick={onRegister}
-        className="w-full mt-4 bg-ocean-500 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-ocean-500/30 flex items-center justify-center gap-2">
-        Zarejestruj się, by zapisać dane
-      </button>
-
-      <button onClick={() => router.push('/login')}
-        className="w-full mt-2 bg-ocean-50 text-ocean-700 py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2">
-        Zaloguj się
-      </button>
-
-      {/* FAQ */}
-      <div className="mt-6 mb-2">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-ocean-500 mb-3">Najczęstsze pytania</h2>
-        <div className="space-y-2">
-          {FAQ_ITEMS.map((item) => <FaqItem key={item.q} q={item.q} a={item.a} />)}
-        </div>
-      </div>
-
-      <PartnerLogos logoHeight="h-8" />
-
-      {/* Popup */}
-      {showPopup && (
-        <div className="fixed inset-0 z-[900] flex items-end justify-center p-4 bg-black/40"
-          onClick={() => setShowPopup(false)}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="text-center mb-4">
-              <div className="w-14 h-14 bg-ocean-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Lock size={24} className="text-ocean-500" />
-              </div>
-              <h2 className="font-extrabold text-ocean-900 text-lg">Zarejestruj się</h2>
-              <p className="text-gray-400 text-sm mt-1">
-                Dane profilu są dostępne tylko dla zarejestrowanych użytkowników. Twoje odkrycia zostaną przeniesione na nowe konto.
-              </p>
-            </div>
-            <button onClick={onRegister}
-              className="w-full bg-ocean-500 text-white py-3 rounded-2xl font-bold text-sm mb-2">
-              Utwórz konto
-            </button>
-            <button onClick={() => setShowPopup(false)}
-              className="w-full py-3 rounded-2xl text-gray-400 text-sm">
-              Zostań gościem
-            </button>
-          </div>
-        </div>
       )}
     </div>
   );
@@ -640,11 +536,6 @@ export default function ProfilPage() {
     router.push('/');
   }, [router]);
 
-  const handleRegister = useCallback(() => {
-    const guestId = typeof window !== 'undefined' ? getUserId() : '';
-    router.push(`/rejestracja?guest=${guestId}`);
-  }, [router]);
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -653,7 +544,10 @@ export default function ProfilPage() {
     );
   }
 
-  if (!user) return <GuestView onRegister={handleRegister} />;
+  if (!user) {
+    router.replace('/rejestracja');
+    return null;
+  }
   if (!user.emailVerified) return <UnverifiedView email={user.email} />;
   return <VerifiedView user={user} onLogout={handleLogout} />;
 }

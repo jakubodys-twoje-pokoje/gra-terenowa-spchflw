@@ -54,7 +54,6 @@ function generateTip(
   discoveredIds: Set<number>,
   userPos: [number, number] | null,
   leaderNickname: string | null,
-  isGuest: boolean,
 ): { text: string; icon: string } | null {
   const total = buildings.length;
   if (total === 0) return null;
@@ -121,11 +120,6 @@ function generateTip(
   if (remaining > 0) {
     pool.push({ text: `Na mapie kryje się jeszcze ${remaining} nieodkrytych miejsc...`, icon: '🔍', w: 1 });
     pool.push({ text: `Odkryj wszystkie miejsca i walcz o 2 wejściówki na SpeechLab 2026! 🎟️`, icon: '🏆', w: 2 });
-  }
-
-  // ── Guest nudge
-  if (isGuest && discovered >= 3) {
-    pool.push({ text: 'Zarejestruj się, żeby zachować swoje odkrycia na zawsze!', icon: '💾', w: 1 });
   }
 
   if (pool.length === 0) return null;
@@ -215,18 +209,7 @@ export default function MapPage() {
       .catch(() => {});
   }, []);
 
-  // Show instructions after welcome modal is dismissed (guest flow)
-  useEffect(() => {
-    const onDismissed = () => {
-      if (!localStorage.getItem('speechflow_instructions_shown')) {
-        setTimeout(() => setShowInstructions(true), 380);
-      }
-    };
-    window.addEventListener('speechflow:welcome-dismissed', onDismissed);
-    return () => window.removeEventListener('speechflow:welcome-dismissed', onDismissed);
-  }, []);
-
-  // Show instructions for logged-in users on first visit (no welcome modal shown to them)
+  // Show instructions for logged-in users on first visit
   useEffect(() => {
     if (!user) return;
     if (localStorage.getItem('speechflow_instructions_shown')) return;
@@ -247,9 +230,9 @@ export default function MapPage() {
 
     const schedule = (delayMs: number) => {
       tipTimerRef.current = setTimeout(() => {
-        const { buildings, discoveredIds, sheetOpen, showInstructions, leaderNickname, user } = snapRef.current;
+        const { buildings, discoveredIds, sheetOpen, showInstructions, leaderNickname } = snapRef.current;
         if (!sheetOpen && !showInstructions) {
-          const tip = generateTip(buildings, discoveredIds, userPosRef.current, leaderNickname, !user);
+          const tip = generateTip(buildings, discoveredIds, userPosRef.current, leaderNickname);
           if (tip) {
             setActiveTip(tip);
             setTimeout(() => setActiveTip(null), TIP_SHOW_MS);
