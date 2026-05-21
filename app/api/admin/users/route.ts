@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
 function auth(req: NextRequest) {
-  return req.headers.get('x-admin-password') === process.env.ADMIN_PASSWORD;
+  return (req.headers.get('x-admin-password') ?? '').toLowerCase() === (process.env.ADMIN_PASSWORD ?? '').toLowerCase();
 }
 
 export async function GET(req: NextRequest) {

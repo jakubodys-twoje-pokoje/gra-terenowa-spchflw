@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? '';
 function isAdmin(req: NextRequest) {
-  return req.headers.get('x-admin-password') === ADMIN_PASSWORD;
+  return (req.headers.get('x-admin-password') ?? '').toLowerCase() === ADMIN_PASSWORD.toLowerCase();
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

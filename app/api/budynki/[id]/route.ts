@@ -21,7 +21,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const password = req.headers.get('x-admin-password');
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if ((password ?? '').toLowerCase() !== (process.env.ADMIN_PASSWORD ?? '').toLowerCase()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -85,7 +85,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const password = req.headers.get('x-admin-password');
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if ((password ?? '').toLowerCase() !== (process.env.ADMIN_PASSWORD ?? '').toLowerCase()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

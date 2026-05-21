@@ -27,7 +27,7 @@ function emptyDayMap(days: number): Record<string, number> {
 
 export async function GET(req: NextRequest) {
   const password = req.headers.get('x-admin-password');
-  if (password !== process.env.ADMIN_PASSWORD) return unauthorized();
+  if ((password ?? '').toLowerCase() !== (process.env.ADMIN_PASSWORD ?? '').toLowerCase()) return unauthorized();
 
   const DAYS = 30;
   const since30 = startOfDay(DAYS);

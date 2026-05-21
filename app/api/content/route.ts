@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 // PUT /api/content?key=regulamin  (admin only)
 export async function PUT(req: NextRequest) {
   const adminPwd = req.headers.get('x-admin-password');
-  if (adminPwd !== ADMIN_PASSWORD)
+  if ((adminPwd ?? '').toLowerCase() !== ADMIN_PASSWORD.toLowerCase())
     return NextResponse.json({ error: 'Brak dostępu' }, { status: 401 });
 
   const key = req.nextUrl.searchParams.get('key');

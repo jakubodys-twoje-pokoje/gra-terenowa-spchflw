@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
-  const isAdmin = req.headers.get('x-admin-password') === process.env.ADMIN_PASSWORD;
+  const isAdmin = (req.headers.get('x-admin-password') ?? '').toLowerCase() === (process.env.ADMIN_PASSWORD ?? '').toLowerCase();
   const where = isAdmin ? {} : { published: true };
 
   try {
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const password = req.headers.get('x-admin-password');
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if ((password ?? '').toLowerCase() !== (process.env.ADMIN_PASSWORD ?? '').toLowerCase()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
