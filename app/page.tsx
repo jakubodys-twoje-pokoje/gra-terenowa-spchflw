@@ -18,20 +18,8 @@ interface Building {
   lng: number;
   imageUrl: string | null;
   outlineImageUrl: string | null;
-  category: string;
   hidden: boolean;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  poradnia:    '🏥 Poradnia',
-  szkola:      '🏫 Szkoła',
-  przedszkole: '🎒 Przedszkole',
-  uczelnia:    '🎓 Uczelnia',
-  centrum:     '🏢 Centrum',
-  historia:    '🏛️ Historia',
-  kultura:     '🎭 Kultura',
-  instytut:    '🔬 Instytut',
-};
 
 function getUserId(): string {
   let id = localStorage.getItem('speechflow_user_id');
@@ -53,7 +41,6 @@ function generateTip(
   buildings: Building[],
   discoveredIds: Set<number>,
   userPos: [number, number] | null,
-  leaderNickname: string | null,
 ): { text: string; icon: string } | null {
   const total = buildings.length;
   if (total === 0) return null;
@@ -92,28 +79,10 @@ function generateTip(
     pool.push({ text: `Zostało Ci tylko ${remaining} miejsc — koniec blisko!`, icon: '⚡', w: 3 });
   }
 
-  // ── Category completion hints
-  for (const [cat, label] of Object.entries(CATEGORY_LABELS)) {
-    const catBuildings  = buildings.filter((b) => b.category === cat);
-    if (catBuildings.length < 2) continue;
-    const catDiscovered = catBuildings.filter((b) => discoveredIds.has(b.id)).length;
-    const catRemaining  = catBuildings.length - catDiscovered;
-    if (catDiscovered > 0 && catRemaining === 1) {
-      pool.push({ text: `Jedno miejsce do kompletu w kategorii ${label}!`, icon: '📌', w: 3 });
-    } else if (catDiscovered > 0 && catRemaining > 0 && catRemaining <= 3) {
-      pool.push({ text: `${label}: brakuje Ci ${catRemaining} miejsc do kompletu`, icon: '📊', w: 1 });
-    }
-  }
-
   // ── Progress
   if (discovered > 0 && remaining > 0) {
     const pct = Math.round((discovered / total) * 100);
     pool.push({ text: `Odkryłeś ${discovered} z ${total} miejsc — ${pct}% mapy zbadane!`, icon: '🗺️', w: 1 });
-  }
-
-  // ── Leaderboard
-  if (leaderNickname) {
-    pool.push({ text: `${leaderNickname} prowadzi w rankingu — spróbuj go dogonić!`, icon: '🥇', w: 1 });
   }
 
   // ── Generic
@@ -140,7 +109,6 @@ export default function MapPage() {
   const [nearestLoading, setNearestLoading] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [activeTip, setActiveTip]         = useState<{ text: string; icon: string } | null>(null);
-  const [leaderNickname, setLeaderNickname] = useState<string | null>(null);
   const [players, setPlayers] = useState<MapPlayer[]>([]);
   const sheetRef       = useRef<HTMLDivElement>(null);
   const mapHandle      = useRef<MapHandle | null>(null);
@@ -151,8 +119,8 @@ export default function MapPage() {
   const { user }       = useAuth();
 
   // Always-fresh snapshot for timer callbacks (avoids stale closure)
-  const snapRef = useRef({ buildings, discoveredIds, sheetOpen, showInstructions, leaderNickname, user });
-  snapRef.current = { buildings, discoveredIds, sheetOpen, showInstructions, leaderNickname, user };
+  const snapRef = useRef({ buildings, discoveredIds, sheetOpen, showInstructions, user });
+  snapRef.current = { buildings, discoveredIds, sheetOpen, showInstructions, user };
 
   // Clean up GPS watch + tip timer when component unmounts
   useEffect(() => {
@@ -201,14 +169,6 @@ export default function MapPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // Fetch top leaderboard name for tips
-  useEffect(() => {
-    fetch('/api/ranking')
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.ranking?.[0]?.nickname) setLeaderNickname(data.ranking[0].nickname); })
-      .catch(() => {});
-  }, []);
-
   // Show instructions for logged-in users on first visit
   useEffect(() => {
     if (!user) return;
@@ -230,9 +190,9 @@ export default function MapPage() {
 
     const schedule = (delayMs: number) => {
       tipTimerRef.current = setTimeout(() => {
-        const { buildings, discoveredIds, sheetOpen, showInstructions, leaderNickname } = snapRef.current;
+        const { buildings, discoveredIds, sheetOpen, showInstructions } = snapRef.current;
         if (!sheetOpen && !showInstructions) {
-          const tip = generateTip(buildings, discoveredIds, userPosRef.current, leaderNickname);
+          const tip = generateTip(buildings, discoveredIds, userPosRef.current);
           if (tip) {
             setActiveTip(tip);
             setTimeout(() => setActiveTip(null), TIP_SHOW_MS);
@@ -465,10 +425,7 @@ export default function MapPage() {
                   )}
 
                   <div className="flex-1 min-w-0 pt-1">
-                    <span className="text-xs font-semibold text-ocean-500 bg-ocean-50 px-2 py-0.5 rounded-full">
-                      {CATEGORY_LABELS[selected.category] ?? selected.category}
-                    </span>
-                    <h2 className="text-base font-extrabold text-ocean-900 mt-1 leading-tight">
+                    <h2 className="text-base font-extrabold text-ocean-900 leading-tight">
                       {selected.name}
                     </h2>
                     {selected.address && isDiscovered && (

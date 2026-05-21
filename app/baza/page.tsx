@@ -12,19 +12,7 @@ interface Building {
   description: string;
   imageUrl: string | null;
   outlineImageUrl: string | null;
-  category: string;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  checza:    '🛖 Chëcze',
-  zagroda:   '🏡 Zagrody',
-  karczma:   '🍺 Karczmy',
-  pensjonat: '🛏️ Pensjonaty',
-  sakralny:  '⛪ Sakralne',
-  natura:    '🌲 Natura',
-  morze:     '🐟 Morze',
-  historia:  '🏛️ Historia',
-};
 
 type DiscoveryFilter = 'all' | 'discovered' | 'undiscovered';
 
@@ -39,7 +27,6 @@ export default function BazaPage() {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [discoveredIds, setDiscoveredIds] = useState<Set<number>>(new Set());
   const [discoveryFilter, setDiscoveryFilter] = useState<DiscoveryFilter>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -57,33 +44,27 @@ export default function BazaPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // Derive available categories from loaded buildings
-  const categories = Array.from(new Set(buildings.map((b) => b.category)));
-
   const filtered = buildings.filter((b) => {
     if (discoveryFilter === 'discovered' && !discoveredIds.has(b.id)) return false;
     if (discoveryFilter === 'undiscovered' && discoveredIds.has(b.id)) return false;
-    if (categoryFilter && b.category !== categoryFilter) return false;
     return true;
   });
 
   return (
     <div className="px-4 pt-6 pb-4">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-2xl bg-cyan-100 flex items-center justify-center">
           <BookOpen size={22} className="text-cyan-600" />
         </div>
         <div>
-          <h1 className="text-xl font-extrabold text-ocean-900">Baza Budynków</h1>
+          <h1 className="text-xl font-extrabold text-ocean-900">Baza Miejsc</h1>
           <p className="text-gray-500 text-xs">
             {loading ? '…' : `${discoveredIds.size} / ${buildings.length} odkrytych`}
           </p>
         </div>
       </div>
 
-      {/* Discovery filter tabs */}
-      <div className="flex bg-gray-100 rounded-2xl p-1 mb-3 gap-1 mt-4">
+      <div className="flex bg-gray-100 rounded-2xl p-1 mb-4 gap-1 mt-4">
         {([['all', 'Wszystkie'], ['discovered', 'Odkryte'], ['undiscovered', 'Nieodkryte']] as [DiscoveryFilter, string][]).map(([val, label]) => (
           <button
             key={val}
@@ -96,35 +77,6 @@ export default function BazaPage() {
           </button>
         ))}
       </div>
-
-      {/* Category filter chips */}
-      {!loading && categories.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-          <button
-            onClick={() => setCategoryFilter(null)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              categoryFilter === null
-                ? 'bg-ocean-600 text-white'
-                : 'bg-gray-100 text-gray-500'
-            }`}
-          >
-            Wszystkie
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                categoryFilter === cat
-                  ? 'bg-ocean-600 text-white'
-                  : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {CATEGORY_LABELS[cat] ?? cat}
-            </button>
-          ))}
-        </div>
-      )}
 
       {loading && (
         <div className="flex justify-center py-16">
@@ -154,7 +106,6 @@ export default function BazaPage() {
               description={b.description}
               imageUrl={b.imageUrl}
               outlineImageUrl={b.outlineImageUrl}
-              category={b.category}
               discovered={discoveredIds.has(b.id)}
               showLink
             />

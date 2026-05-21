@@ -2,17 +2,6 @@ import Link from 'next/link';
 import { MapPin, Check, Lock } from 'lucide-react';
 import clsx from 'clsx';
 
-const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
-  checza:    { label: '🛖 Chëcza',    color: 'bg-amber-100 text-amber-800' },
-  zagroda:   { label: '🏡 Zagroda',   color: 'bg-yellow-100 text-yellow-800' },
-  karczma:   { label: '🍺 Karczma',   color: 'bg-orange-100 text-orange-700' },
-  pensjonat: { label: '🛏️ Pensjonat', color: 'bg-purple-100 text-purple-700' },
-  sakralny:  { label: '⛪ Sakralny',  color: 'bg-blue-100 text-blue-700' },
-  natura:    { label: '🌲 Natura',    color: 'bg-green-100 text-green-700' },
-  morze:     { label: '🐟 Morze',     color: 'bg-cyan-100 text-cyan-700' },
-  historia:  { label: '🏛️ Historia',  color: 'bg-stone-100 text-stone-700' },
-};
-
 interface Props {
   id: number;
   number?: number | null;
@@ -20,16 +9,14 @@ interface Props {
   description: string;
   imageUrl?: string | null;
   outlineImageUrl?: string | null;
-  category: string;
   discovered?: boolean;
   discoveredAt?: string;
   showLink?: boolean;
 }
 
 export default function BuildingCard({
-  id, number, name, description, imageUrl, outlineImageUrl, category, discovered, discoveredAt, showLink = true,
+  id, number, name, description, imageUrl, outlineImageUrl, discovered, discoveredAt, showLink = true,
 }: Props) {
-  const cat = CATEGORY_LABELS[category] ?? { label: category, color: 'bg-gray-100 text-gray-600' };
   const undiscoveredSrc = outlineImageUrl ?? imageUrl;
 
   const card = (
@@ -66,11 +53,8 @@ export default function BuildingCard({
       </div>
 
       {/* Content */}
-      <div className="p-4 pt-2">
-        <span className={clsx('text-xs font-semibold px-2 py-0.5 rounded-full', cat.color)}>
-          {cat.label}
-        </span>
-        <h3 className="font-bold text-ocean-800 mt-2 leading-snug line-clamp-1">
+      <div className="p-4 pt-3">
+        <h3 className="font-bold text-ocean-800 leading-snug line-clamp-1">
           {number != null ? `${number}. ${name}` : name}
         </h3>
         {discovered ? (

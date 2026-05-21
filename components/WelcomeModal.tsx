@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
-import { UserPlus, LogIn, MapPin, Trophy, Smartphone, Ticket } from 'lucide-react';
+import { UserPlus, LogIn, MapPin, Smartphone, Ticket } from 'lucide-react';
 
 const BENEFITS = [
   { icon: Smartphone, text: 'Zachowaj postęp na każdym urządzeniu' },
-  { icon: Trophy,     text: 'Dołącz do rankingu odkrywców' },
   { icon: MapPin,     text: 'Zbieraj odznaki i śledź trasę odkryć' },
 ];
 

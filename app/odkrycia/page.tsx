@@ -1,35 +1,20 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Compass, Trophy, Medal, Crown } from 'lucide-react';
+import { Compass } from 'lucide-react';
 import Link from 'next/link';
 import AchievementBadge from '@/components/AchievementBadge';
 import { useAuth } from '@/lib/useAuth';
 
 interface Discovery {
   discoveredAt: string;
-  building: { id: number; category: string; lat: number; lng: number };
-}
-
-interface RankEntry {
-  rank: number;
-  userId: string;
-  nickname: string | null;
-  city: string | null;
-  avatarUrl: string | null;
-  discoveryCount: number;
-  isCurrentUser: boolean;
+  building: { id: number; lat: number; lng: number };
 }
 
 function getUserId(): string {
   let id = localStorage.getItem('speechflow_user_id');
   if (!id) { id = crypto.randomUUID(); localStorage.setItem('speechflow_user_id', id); }
   return id;
-}
-
-function displayName(entry: RankEntry) {
-  if (entry.nickname) return entry.nickname;
-  return `Odkrywca #${entry.userId.slice(-4).toUpperCase()}`;
 }
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
@@ -85,7 +70,6 @@ function calcPlaytime(discoveries: Discovery[]) {
   return `${days} dni`;
 }
 
-// ── Animated counter ─────────────────────────────────────────────────────────
 function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: number }) {
   const [display, setDisplay] = useState(0);
   const raf = useRef<number>(0);
@@ -104,7 +88,6 @@ function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: num
   return <>{display.toFixed(decimals)}</>;
 }
 
-// ── SVG Donut ─────────────────────────────────────────────────────────────────
 function DonutRing({ pct, count, total }: { pct: number; count: number; total: number }) {
   const R = 54;
   const C = 2 * Math.PI * R;
@@ -147,53 +130,6 @@ function DonutRing({ pct, count, total }: { pct: number; count: number; total: n
   );
 }
 
-// ── Category bars ─────────────────────────────────────────────────────────────
-const CAT_CONFIG: Record<string, { label: string; emoji: string; color: string }> = {
-  checza:    { label: 'Chëcze',    emoji: '🛖', color: '#D97706' },
-  zagroda:   { label: 'Zagrody',   emoji: '🏡', color: '#CA8A04' },
-  karczma:   { label: 'Karczmy',   emoji: '🍺', color: '#F97316' },
-  pensjonat: { label: 'Pensjonaty',emoji: '🛏️', color: '#A855F7' },
-  sakralny:  { label: 'Sakralne',  emoji: '⛪', color: '#3B82F6' },
-  natura:    { label: 'Natura',    emoji: '🌲', color: '#22C55E' },
-  morze:     { label: 'Morze',     emoji: '🐟', color: '#06B6D4' },
-  historia:  { label: 'Historia',  emoji: '🏛️', color: '#78716C' },
-};
-
-function CategoryBars({ categories }: { categories: string[] }) {
-  const counts: Record<string, number> = {};
-  categories.forEach((c) => { counts[c] = (counts[c] ?? 0) + 1; });
-  const max = Math.max(1, ...Object.values(counts));
-  const entries = Object.entries(CAT_CONFIG).filter(([k]) => counts[k]);
-
-  if (entries.length === 0) {
-    return <p className="text-gray-400 text-xs text-center py-2">Brak odkryć</p>;
-  }
-
-  return (
-    <div className="space-y-2.5">
-      {entries.map(([key, cfg]) => (
-        <div key={key} className="flex items-center gap-2">
-          <span className="text-base w-6 text-center">{cfg.emoji}</span>
-          <div className="flex-1">
-            <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${(counts[key] / max) * 100}%`,
-                  background: cfg.color,
-                  transitionDelay: '200ms',
-                }}
-              />
-            </div>
-          </div>
-          <span className="text-xs font-bold text-gray-500 w-4 text-right">{counts[key]}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── Day of week bars ──────────────────────────────────────────────────────────
 const DAYS = ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb'];
 
 function DayChart({ discoveries }: { discoveries: Discovery[] }) {
@@ -226,9 +162,7 @@ function DayChart({ discoveries }: { discoveries: Discovery[] }) {
   );
 }
 
-// ── Hourly activity bars ──────────────────────────────────────────────────────
 function HourChart({ discoveries }: { discoveries: Discovery[] }) {
-  // Group into 6 blocks of 4 hours
   const blocks = [0, 4, 8, 12, 16, 20];
   const labels = ['0–4', '4–8', '8–12', '12–16', '16–20', '20–24'];
   const counts = blocks.map((start) =>
@@ -264,7 +198,6 @@ function HourChart({ discoveries }: { discoveries: Discovery[] }) {
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
 interface AchievementWithStatus {
   id: number;
   name: string;
@@ -278,28 +211,22 @@ export default function OdkryciaPage() {
   const { user } = useAuth();
   const [discoveries, setDiscoveries] = useState<Discovery[]>([]);
   const [totalBuildings, setTotalBuildings] = useState(0);
-  const [ranking, setRanking] = useState<RankEntry[]>([]);
-  const [currentUser, setCurrentUser] = useState<RankEntry | null>(null);
   const [achievements, setAchievements] = useState<AchievementWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'stats' | 'odznaki' | 'ranking'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'odznaki'>('stats');
 
   const load = useCallback(async () => {
     const userId = user?.userId ?? getUserId();
-    const [discRes, allRes, rankRes, achRes] = await Promise.all([
+    const [discRes, allRes, achRes] = await Promise.all([
       fetch(`/api/odkrycia?userId=${userId}`),
       fetch('/api/budynki'),
-      fetch(`/api/ranking?userId=${userId}`),
       fetch(`/api/osiagniecia?userId=${userId}`),
     ]);
     const disc: Discovery[] = discRes.ok ? await discRes.json() : [];
     const all = allRes.ok ? await allRes.json() : [];
-    const rankData = rankRes.ok ? await rankRes.json() : { ranking: [], currentUser: null };
     const achs: AchievementWithStatus[] = achRes.ok ? await achRes.json() : [];
     setDiscoveries(disc);
     setTotalBuildings(all.length);
-    setRanking(rankData.ranking ?? []);
-    setCurrentUser(rankData.currentUser ?? null);
     setAchievements(Array.isArray(achs) ? achs : []);
     setLoading(false);
   }, [user]);
@@ -308,17 +235,14 @@ export default function OdkryciaPage() {
 
   const count = discoveries.length;
   const pct = totalBuildings > 0 ? Math.round((count / totalBuildings) * 100) : 0;
-  const categories = discoveries.map((d) => d.building.category);
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
 
   const streak = calcStreak(discoveries);
   const kmTotal = calcKm(discoveries);
   const playtime = calcPlaytime(discoveries);
-  const totalRankCount = (ranking.length > 0 ? ranking[ranking.length - 1].rank : null) ?? ranking.length;
 
   return (
     <div className="px-4 pt-6">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <div className="w-10 h-10 rounded-2xl bg-ocean-100 flex items-center justify-center">
           <Compass size={22} className="text-ocean-500" />
@@ -331,17 +255,16 @@ export default function OdkryciaPage() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex bg-gray-100 rounded-2xl p-1 mb-5 gap-1">
-        {(['stats', 'odznaki', 'ranking'] as const).map((tab) => (
+        {(['stats', 'odznaki'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize ${
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === tab ? 'bg-white text-ocean-600 shadow-sm' : 'text-gray-400'
             }`}
           >
-            {tab === 'stats' ? 'Statystyki' : tab === 'odznaki' ? 'Odznaki' : 'Ranking'}
+            {tab === 'stats' ? 'Statystyki' : 'Odznaki'}
           </button>
         ))}
       </div>
@@ -352,15 +275,13 @@ export default function OdkryciaPage() {
         </div>
       )}
 
-      {/* ── STATS TAB ── */}
       {!loading && activeTab === 'stats' && (
         <div className="space-y-4 pb-6">
-
           {count === 0 ? (
             <div className="text-center py-10 px-4">
               <div className="text-5xl mb-3">🗺️</div>
               <p className="text-ocean-900 font-bold mb-2">Zacznij eksplorować!</p>
-              <p className="text-gray-400 text-sm mb-4">Znajdź kod QR przy budynku w Karwi i go zeskanuj.</p>
+              <p className="text-gray-400 text-sm mb-4">Znajdź kod QR przy miejscu i zeskanuj go.</p>
               <Link href="/skanuj">
                 <button className="bg-ocean-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-ocean-500/30">
                   Skanuj pierwszy kod QR
@@ -369,7 +290,6 @@ export default function OdkryciaPage() {
             </div>
           ) : (
             <>
-              {/* 1 — Wielki pierścień */}
               <div className="bg-white rounded-3xl p-6 shadow-card flex flex-col items-center">
                 <DonutRing pct={pct} count={count} total={totalBuildings} />
                 <div className="w-full mt-4 bg-gray-100 rounded-full h-1.5 overflow-hidden">
@@ -381,22 +301,7 @@ export default function OdkryciaPage() {
                 </p>
               </div>
 
-              {/* 2-kolumnowy rząd: Ranking + Seria */}
               <div className="grid grid-cols-2 gap-4">
-                {/* 2 — Ranking */}
-                <div className="bg-white rounded-3xl p-5 shadow-card flex flex-col items-center text-center">
-                  <span className="text-4xl leading-none mb-1">🏆</span>
-                  <p className="text-4xl font-extrabold text-ocean-700 leading-none mt-1">
-                    {currentUser ? `#${currentUser.rank}` : '—'}
-                  </p>
-                  <p className="text-[11px] text-gray-400 mt-1.5 font-semibold">
-                    {currentUser && totalRankCount > 0
-                      ? `wśród ${totalRankCount} odkrywców`
-                      : 'pozycja w rankingu'}
-                  </p>
-                </div>
-
-                {/* 3 — Seria */}
                 <div className="bg-white rounded-3xl p-5 shadow-card flex flex-col items-center text-center">
                   <span className="text-4xl leading-none mb-1">🔥</span>
                   <p className="text-4xl font-extrabold text-orange-500 leading-none mt-1">
@@ -407,11 +312,7 @@ export default function OdkryciaPage() {
                     <p className="text-[10px] text-gray-300 mt-1">rekord: {streak.best} dni</p>
                   )}
                 </div>
-              </div>
 
-              {/* 2-kolumnowy rząd: Kilometry + Playtime */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* 4 — Kilometry */}
                 <div className="bg-white rounded-3xl p-5 shadow-card flex flex-col items-center text-center">
                   <span className="text-4xl leading-none mb-1">🚶</span>
                   <p className="text-4xl font-extrabold text-green-600 leading-none mt-1">
@@ -419,30 +320,21 @@ export default function OdkryciaPage() {
                   </p>
                   <p className="text-[11px] text-gray-400 mt-1.5 font-semibold">km między odkryciami</p>
                 </div>
-
-                {/* 5 — Playtime */}
-                <div className="bg-white rounded-3xl p-5 shadow-card flex flex-col items-center text-center">
-                  <span className="text-4xl leading-none mb-1">⏱️</span>
-                  <p className="text-3xl font-extrabold text-purple-600 leading-none mt-1 leading-tight">
-                    {playtime ?? '—'}
-                  </p>
-                  <p className="text-[11px] text-gray-400 mt-1.5 font-semibold">łączny czas przygody</p>
-                </div>
               </div>
 
-              {/* 6 — Kategorie */}
-              <div className="bg-white rounded-3xl p-5 shadow-card">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Co odkryłeś?</p>
-                <CategoryBars categories={categories} />
+              <div className="bg-white rounded-3xl p-5 shadow-card flex flex-col items-center text-center">
+                <span className="text-4xl leading-none mb-1">⏱️</span>
+                <p className="text-3xl font-extrabold text-purple-600 leading-none mt-1">
+                  {playtime ?? '—'}
+                </p>
+                <p className="text-[11px] text-gray-400 mt-1.5 font-semibold">łączny czas przygody</p>
               </div>
 
-              {/* 7 — Dzień tygodnia */}
               <div className="bg-white rounded-3xl p-5 shadow-card">
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Twój dzień odkryć</p>
                 <DayChart discoveries={discoveries} />
               </div>
 
-              {/* 8 — Aktywność godzinowa */}
               <div className="bg-white rounded-3xl p-5 shadow-card">
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">O której odkrywasz?</p>
                 <HourChart discoveries={discoveries} />
@@ -452,7 +344,6 @@ export default function OdkryciaPage() {
         </div>
       )}
 
-      {/* ── ODZNAKI TAB ── */}
       {!loading && activeTab === 'odznaki' && (
         <div className="grid grid-cols-2 gap-3 pb-4">
           {achievements.map((a) => (
@@ -465,81 +356,6 @@ export default function OdkryciaPage() {
               unlocked={a.unlocked}
             />
           ))}
-        </div>
-      )}
-
-      {/* ── RANKING TAB ── */}
-      {!loading && activeTab === 'ranking' && (
-        <div className="pb-4 space-y-2">
-          {currentUser && !ranking.some((r) => r.isCurrentUser) && (
-            <div className="bg-ocean-50 border-2 border-ocean-200 rounded-2xl p-3 mb-4">
-              <p className="text-xs text-ocean-500 font-semibold mb-1">Twoje miejsce</p>
-              <div className="flex items-center gap-3">
-                <span className="text-lg font-extrabold text-ocean-700 w-8 text-center">#{currentUser.rank}</span>
-                <div className="flex-1">
-                  <p className="font-bold text-ocean-900 text-sm">{displayName(currentUser)}</p>
-                  {currentUser.city && <p className="text-xs text-gray-400">{currentUser.city}</p>}
-                </div>
-                <span className="text-sm font-extrabold text-ocean-600">{currentUser.discoveryCount} 📍</span>
-              </div>
-            </div>
-          )}
-
-          {ranking.length === 0 && (
-            <div className="text-center py-10">
-              <div className="text-4xl mb-2">🏆</div>
-              <p className="text-gray-400 text-sm">Nikt jeszcze nie odkrył żadnego miejsca. Bądź pierwszy!</p>
-            </div>
-          )}
-
-          {ranking.map((entry, i) => {
-            const crown = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : null;
-            return (
-              <div
-                key={entry.userId}
-                className={`flex items-center gap-3 rounded-2xl p-3 ${
-                  entry.isCurrentUser
-                    ? 'bg-ocean-50 border-2 border-ocean-300'
-                    : 'bg-white shadow-card'
-                }`}
-              >
-                <div className="w-8 text-center">
-                  {crown
-                    ? <span className="text-lg">{crown}</span>
-                    : <span className="text-sm font-bold text-gray-400">#{entry.rank}</span>
-                  }
-                </div>
-                {entry.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={entry.avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover" />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-ocean-100 flex items-center justify-center shrink-0">
-                    <Medal size={16} className="text-ocean-400" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className={`font-bold text-sm truncate ${entry.isCurrentUser ? 'text-ocean-700' : 'text-ocean-900'}`}>
-                    {displayName(entry)}
-                    {entry.isCurrentUser && <span className="text-xs font-normal text-ocean-400 ml-1">(Ty)</span>}
-                  </p>
-                  {entry.city && <p className="text-xs text-gray-400 truncate">{entry.city}</p>}
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="font-extrabold text-ocean-600 text-sm">{entry.discoveryCount}</p>
-                  <p className="text-[10px] text-gray-400">odkryć</p>
-                </div>
-              </div>
-            );
-          })}
-
-          {ranking.length > 0 && !currentUser && (
-            <div className="text-center py-4 px-4 bg-gray-50 rounded-2xl mt-2">
-              <Crown size={20} className="text-gray-300 mx-auto mb-1" />
-              <p className="text-xs text-gray-400">
-                Zeskanuj swoje pierwsze miejsce, by pojawić się w rankingu!
-              </p>
-            </div>
-          )}
         </div>
       )}
     </div>

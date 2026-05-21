@@ -5,23 +5,12 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ArrowLeft, MapPin, Navigation, Check, Lock, QrCode, Share2, X } from 'lucide-react';
 import Link from 'next/link';
-import clsx from 'clsx';
 import type { MapBuilding } from '@/components/MapComponent';
 import EasterEggPopup, { type EasterEggData } from '@/components/EasterEggPopup';
 import { useAuth } from '@/lib/useAuth';
 
 const MapComponent = dynamic(() => import('@/components/MapComponent'), { ssr: false });
 
-const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
-  checza:    { label: '🛖 Chëcza',    color: 'bg-amber-100 text-amber-800' },
-  zagroda:   { label: '🏡 Zagroda',   color: 'bg-yellow-100 text-yellow-800' },
-  karczma:   { label: '🍺 Karczma',   color: 'bg-orange-100 text-orange-700' },
-  pensjonat: { label: '🛏️ Pensjonat', color: 'bg-purple-100 text-purple-700' },
-  sakralny:  { label: '⛪ Sakralny',  color: 'bg-blue-100 text-blue-700' },
-  natura:    { label: '🌲 Natura',    color: 'bg-green-100 text-green-700' },
-  morze:     { label: '🐟 Morze',     color: 'bg-cyan-100 text-cyan-700' },
-  historia:  { label: '🏛️ Historia',  color: 'bg-stone-100 text-stone-700' },
-};
 
 interface BuildingImage { id: number; url: string; title: string | null; alt: string | null; order: number; }
 
@@ -35,7 +24,6 @@ interface Building {
   lng: number;
   imageUrl: string | null;
   outlineImageUrl: string | null;
-  category: string;
   qrUrl: string;
   images: BuildingImage[];
 }
@@ -45,7 +33,6 @@ interface NearbyBuilding {
   name: string;
   lat: number;
   lng: number;
-  category: string;
   imageUrl: string | null;
   outlineImageUrl: string | null;
   distanceKm: number;
@@ -100,7 +87,7 @@ export default function BudynekPage() {
 
     const b: Building = await bRes.json();
     const n: NearbyBuilding[] = nRes.ok ? await nRes.json() : [];
-    const discoveries: { building: { id: number; category: string } }[] = discRes.ok ? await discRes.json() : [];
+    const discoveries: { building: { id: number } }[] = discRes.ok ? await discRes.json() : [];
 
     // Ground-truth discovery check from server — cannot be spoofed via localStorage
     const isDiscovered = discoveries.some((d) => d.building.id === Number(id));
@@ -228,10 +215,7 @@ export default function BudynekPage() {
 
         {/* Content */}
         <div className="px-4 -mt-6 relative z-10 flex-1 flex flex-col">
-          <span className={clsx('text-xs font-semibold px-2.5 py-1 rounded-full', CATEGORY_LABELS[building.category]?.color ?? 'bg-gray-100 text-gray-600')}>
-            {CATEGORY_LABELS[building.category]?.label ?? building.category}
-          </span>
-          <h1 className="text-2xl font-extrabold text-ocean-900 mt-2 leading-tight">{building.name}</h1>
+          <h1 className="text-2xl font-extrabold text-ocean-900 leading-tight">{building.name}</h1>
           <p className="text-gray-400 text-sm mt-1">Lokalizacja nieznana — odkryj, by zobaczyć szczegóły</p>
 
           <div className="bg-ocean-50 border border-ocean-100 rounded-3xl p-5 mt-4 text-center flex flex-col items-center gap-3">
@@ -261,7 +245,6 @@ export default function BudynekPage() {
   }
 
   // ── DISCOVERED VIEW ──────────────────────────────────────────────────────────
-  const cat = CATEGORY_LABELS[building.category] ?? { label: building.category, color: 'bg-gray-100 text-gray-600' };
   const mapBuildings: MapBuilding[] = [
     { id: building.id, name: building.name, lat: building.lat, lng: building.lng, discovered: true, isActive: true },
     ...nearby.map((n) => ({ id: n.id, name: n.name, lat: n.lat, lng: n.lng, discovered: false })),
@@ -295,8 +278,7 @@ export default function BudynekPage() {
 
       {/* Content */}
       <div className="px-4 -mt-6 relative z-10">
-        <span className={clsx('text-xs font-semibold px-2.5 py-1 rounded-full', cat.color)}>{cat.label}</span>
-        <h1 className="text-2xl font-extrabold text-ocean-900 mt-2 leading-tight">{building.name}</h1>
+        <h1 className="text-2xl font-extrabold text-ocean-900 leading-tight">{building.name}</h1>
         {building.address && (
           <p className="flex items-center gap-1.5 text-gray-400 text-sm mt-1">
             <MapPin size={14} />
